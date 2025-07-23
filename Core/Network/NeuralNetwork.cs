@@ -1,4 +1,5 @@
-﻿using Core.Models;
+﻿using Core.Events;
+using Core.Models;
 
 namespace Core.Network;
 
@@ -7,9 +8,9 @@ namespace Core.Network;
 /// </summary>
 public class NeuralNetwork
 {
-    public Action<int, double>? TrainingProgress { get; set; }
-    public Action<double, int>? EndTrain { get; set; }
-    public Action<List<double>>? GetErrors { get; set; }
+    public event EventHandler<TrainingProgressEventArgs>? TrainingProgress;
+    public event EventHandler<EndTrainEventArgs>? EndTrain;
+    public event EventHandler<ErrorsEventArgs>? ErrorsGenerated;
 
     private readonly Neuron[] _hiddenLayer;
     private readonly Neuron _outputNeuron;
@@ -94,16 +95,16 @@ public class NeuralNetwork
             }
 
             errors.Add(totalError);
-            TrainingProgress?.Invoke(epoch, totalError);
+            TrainingProgress?.Invoke(this, new TrainingProgressEventArgs(epoch, totalError));
 
             if (HasLearnedAll(trainingData, confidenceThreshold))
             {
-                EndTrain?.Invoke(confidenceThreshold, epoch);
+                EndTrain?.Invoke(this, new EndTrainEventArgs(confidenceThreshold, epoch));
                 break;
             }
         }
 
-        GetErrors?.Invoke(errors);
+        ErrorsGenerated?.Invoke(this, new ErrorsEventArgs(errors));
     }
 
     private bool HasLearnedAll(List<TrainingSample> trainingSet, double confidenceThreshold)

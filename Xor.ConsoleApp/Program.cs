@@ -17,6 +17,8 @@ internal class Program
     private static void Main(string[] args)
     {
         Console.OutputEncoding = System.Text.Encoding.UTF8;
+        Console.Title = "[NeuralNet] XOR ConsoleApp";
+
         ShowIntro();
 
         AskModelPreference(out bool resetRequested);
@@ -78,45 +80,47 @@ Il va ""deviner"" les bons résultats par ajustement automatique.
     /// </summary>
     private static void SetupNetwork()
     {
-        _network = new NeuralNetwork(inputCount: 2, hiddenCount: 2)
+        _network = new NeuralNetwork(inputCount: 2, hiddenCount: 2);
+
+        _network.TrainingProgress += (sender, args) =>
         {
-            TrainingProgress = (epoch, error) =>
-            {
-                Console.WriteLine($"Epoch {epoch} - Total Error: {error:F6}");
-            },
-            EndTrain = (confidenceThreshold, epoch) =>
-            {
-                Console.WriteLine($"\n✅ Le réseau a atteint un niveau de confiance ≥ {confidenceThreshold:P0} à l'epoch {epoch} !");
-            },
-            GetErrors = (errors) =>
-            {
-                const int graphHeight = 10;
-                const int graphWidth = 50;
+            Console.WriteLine($"Epoch {args.Epoch} - Total Error: {args.Error:F6}");
+        };
 
-                double maxError = errors.Max();
-                double minError = errors.Min();
-                double range = maxError - minError;
+        _network.EndTrain += (sender, args) =>
+        {
+            Console.WriteLine($"\n✅ Le réseau a atteint un niveau de confiance ≥ {args.ConfidenceThreshold:P0} à l'epoch {args.Epoch} !");
+        };
 
-                Console.WriteLine("\n📈 Courbe d'erreur :");
-                for (int y = graphHeight - 1; y >= 0; y--)
+        _network.ErrorsGenerated += (sender, args) =>
+        {
+            const int graphHeight = 10;
+            const int graphWidth = 50;
+
+            var errors = args.Errors;
+            double maxError = errors.Max();
+            double minError = errors.Min();
+            double range = maxError - minError;
+
+            Console.WriteLine("\n📈 Courbe d'erreur :");
+            for (int y = graphHeight - 1; y >= 0; y--)
+            {
+                double threshold = minError + (range * y / (graphHeight - 1));
+                string line = "";
+
+                for (int x = 0; x < graphWidth; x++)
                 {
-                    double threshold = minError + (range * y / (graphHeight - 1));
-                    string line = "";
-
-                    for (int x = 0; x < graphWidth; x++)
-                    {
-                        int index = x * errors.Count / graphWidth;
-                        if (index < errors.Count && errors[index] >= threshold)
-                            line += "█";
-                        else
-                            line += " ";
-                    }
-
-                    Console.WriteLine(line);
+                    int index = x * errors.Count / graphWidth;
+                    if (index < errors.Count && errors[index] >= threshold)
+                        line += "█";
+                    else
+                        line += " ";
                 }
 
-                Console.WriteLine(new string('─', graphWidth));
+                Console.WriteLine(line);
             }
+
+            Console.WriteLine(new string('─', graphWidth));
         };
     }
 
@@ -128,12 +132,12 @@ Il va ""deviner"" les bons résultats par ajustement automatique.
         Console.WriteLine("🔧 Entraînement du réseau...\n");
 
         var trainingSet = new List<TrainingSample>
-    {
-        new([0, 0], [0]),
-        new([0, 1], [1]),
-        new([1, 0], [1]),
-        new([1, 1], [0])
-    };
+        {
+            new([0, 0], [0]),
+            new([0, 1], [1]),
+            new([1, 0], [1]),
+            new([1, 1], [0])
+        };
 
         _network!.Train(trainingSet, maxEpochs: 200000, learningRate: 0.1, 0.95);
 
