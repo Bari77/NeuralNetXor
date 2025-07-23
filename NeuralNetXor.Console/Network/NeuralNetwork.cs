@@ -106,7 +106,6 @@ public class NeuralNetwork
         GetErrors?.Invoke(errors);
     }
 
-
     private bool HasLearnedAll(List<TrainingSample> trainingSet, double confidenceThreshold)
     {
         foreach (var sample in trainingSet)
@@ -120,6 +119,39 @@ public class NeuralNetwork
                 return false;
         }
         return true;
+    }
+
+    public ModelData ExportModel()
+    {
+        return new ModelData
+        {
+            HiddenWeights = _hiddenLayer
+                .Select(n => Enumerable.Range(0, n.InputCount).Select(n.GetWeight).ToList())
+                .ToList(),
+            HiddenBiases = _hiddenLayer
+                .Select(n => n.GetBias())
+                .ToList(),
+            OutputWeights = Enumerable.Range(0, _outputNeuron.InputCount)
+                .Select(_outputNeuron.GetWeight)
+                .ToList(),
+            OutputBias = _outputNeuron.GetBias()
+        };
+    }
+
+    public void ImportModel(ModelData model)
+    {
+        for (int i = 0; i < _hiddenLayer.Length; i++)
+        {
+            for (int j = 0; j < _hiddenLayer[i].InputCount; j++)
+                _hiddenLayer[i].SetWeight(j, model.HiddenWeights[i][j]);
+
+            _hiddenLayer[i].SetBias(model.HiddenBiases[i]);
+        }
+
+        for (int i = 0; i < _outputNeuron.InputCount; i++)
+            _outputNeuron.SetWeight(i, model.OutputWeights[i]);
+
+        _outputNeuron.SetBias(model.OutputBias);
     }
 
 }

@@ -72,4 +72,8 @@ public class Neuron
     {
         _bias += delta;
     }
+
+    public double GetBias() => _bias;
+    public void SetBias(double value) => _bias = value;
+    public void SetWeight(int index, double value) => _weights[index] = value;
 }
