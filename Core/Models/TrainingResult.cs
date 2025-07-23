@@ -1,4 +1,4 @@
-﻿namespace NeuralNetXor.Console.Models;
+﻿namespace Core.Models;
 
 /// <summary>
 /// Represents the result of a forward pass, including intermediate data.

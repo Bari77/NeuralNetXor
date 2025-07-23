@@ -1,7 +1,9 @@
-﻿using NeuralNetXor.Console.Models;
-using NeuralNetXor.Console.Network;
+﻿using Core.Models;
+using Core.Network;
 using System.Globalization;
 using System.Text.Json;
+
+namespace Xor.ConsoleApp;
 
 internal class Program
 {
@@ -43,21 +45,21 @@ internal class Program
 ╚════════════════════════════════════════════════════╝
 
 Une porte logique XOR (exclusive OR) renvoie :
-    → 1 si les deux entrées sont différentes
-    → 0 si elles sont identiques
+→ 1 si les deux entrées sont différentes
+→ 0 si elles sont identiques
 
-    Entrée A   Entrée B   Résultat attendu
-    ─────────  ─────────  ─────────────────
-        0          0              0
-        0          1              1
-        1          0              1
-        1          1              0
+Entrée A   Entrée B   Résultat attendu
+─────────  ─────────  ─────────────────
+    0          0              0
+    0          1              1
+    1          0              1
+    1          1              0
 
 L’objectif de ce programme est de faire apprendre cette logique
 à un réseau de neurones sans lui dire les règles à l’avance.
 
 Il va ""deviner"" les bons résultats par ajustement automatique.
-        ");
+    ");
     }
 
     /// <summary>
@@ -126,12 +128,12 @@ Il va ""deviner"" les bons résultats par ajustement automatique.
         Console.WriteLine("🔧 Entraînement du réseau...\n");
 
         var trainingSet = new List<TrainingSample>
-        {
-            new([0, 0], [0]),
-            new([0, 1], [1]),
-            new([1, 0], [1]),
-            new([1, 1], [0])
-        };
+    {
+        new([0, 0], [0]),
+        new([0, 1], [1]),
+        new([1, 0], [1]),
+        new([1, 1], [0])
+    };
 
         _network!.Train(trainingSet, maxEpochs: 200000, learningRate: 0.1, 0.95);
 

@@ -1,6 +1,10 @@
 
-NeuralNetXor.Console/bin/
+Xor.ConsoleApp/bin/
 
-NeuralNetXor.Console/obj/
+Xor.ConsoleApp/obj/
 
 .vs/
+
+Core/bin/
+
+Core/obj/

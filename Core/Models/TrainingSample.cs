@@ -1,4 +1,4 @@
-﻿namespace NeuralNetXor.Console.Models;
+﻿namespace Core.Models;
 
 /// <summary>
 /// Represents a single training sample with inputs and expected output.

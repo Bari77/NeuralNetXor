@@ -1,4 +1,4 @@
-﻿namespace NeuralNetXor.Console.Network;
+﻿namespace Core.Network;
 
 /// <summary>
 /// Represents a basic neuron with weighted inputs and a bias.

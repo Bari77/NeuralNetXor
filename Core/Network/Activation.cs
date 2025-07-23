@@ -1,4 +1,4 @@
-﻿namespace NeuralNetXor.Console.Network;
+﻿namespace Core.Network;
 
 /// <summary>
 /// Static class for activation functions.

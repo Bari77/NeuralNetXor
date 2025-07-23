@@ -1,6 +1,6 @@
-﻿using NeuralNetXor.Console.Models;
+﻿using Core.Models;
 
-namespace NeuralNetXor.Console.Network;
+namespace Core.Network;
 
 /// <summary>
 /// Represents a basic feedforward neural network with 1 hidden layer.

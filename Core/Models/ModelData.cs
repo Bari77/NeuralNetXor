@@ -1,4 +1,4 @@
-﻿namespace NeuralNetXor.Console.Models;
+﻿namespace Core.Models;
 
 public class ModelData
 {
